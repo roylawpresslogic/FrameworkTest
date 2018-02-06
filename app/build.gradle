@@ -31,4 +31,7 @@ dependencies {
 
     // bottom navigation bar
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
+
+    // navigation drawer
+    implementation 'nl.psdcompany:duo-navigation-drawer:2.0.7'
 }

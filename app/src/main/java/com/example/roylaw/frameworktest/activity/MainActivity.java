@@ -17,13 +17,21 @@ import com.ncapdevi.fragnav.FragNavSwitchController;
 import com.ncapdevi.fragnav.FragNavTransactionOptions;
 import com.ncapdevi.fragnav.tabhistory.FragNavTabHistoryController;
 
+import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
+import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
+import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
+
 public class MainActivity extends AppCompatActivity implements FragNavController.RootFragmentListener, FragNavSwitchController, FragNavController.TransactionListener, BaseFragment.FragmentNavigation {
 
     private final int INDEX_HOME = FragNavController.TAB1;
     private final int INDEX_DASHBOARD = FragNavController.TAB2;
     private final int INDEX_NOTIFICATIONS = FragNavController.TAB3;
+    private final int INDEX_TAB4 = FragNavController.TAB4;
+    private final int INDEX_TAB5 = FragNavController.TAB5;
 
     // Views
+    private DuoDrawerLayout mDuoDrawerLayout;
+    private DuoMenuView mDuoMenuView;
     private AHBottomNavigation bottomNavigation;
 
     private FragNavController fragNavController;
@@ -35,13 +43,16 @@ public class MainActivity extends AppCompatActivity implements FragNavController
 
         fragNavController = FragNavController.newBuilder(savedInstanceState, getSupportFragmentManager(), R.id.container)
                 .transactionListener(this)
-                .rootFragmentListener(this, 3)
+                .rootFragmentListener(this, 5)
                 .popStrategy(FragNavTabHistoryController.CURRENT_TAB)
                 .switchController(this)
                 .build();
 
         // initialize bottom nav view
         initBottomNavigation();
+
+        // initialize drawer
+        initDrawer();
     }
 
     @Override
@@ -52,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements FragNavController
             case INDEX_DASHBOARD:
                 return new DashboardFragment();
             case INDEX_NOTIFICATIONS:
+                return new NotificationFragment();
+            case INDEX_TAB4:
+                return new NotificationFragment();
+            case INDEX_TAB5:
                 return new NotificationFragment();
             default:
                 return null;
@@ -80,12 +95,20 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Home", R.drawable.ic_launcher_foreground, android.R.color.black);
         AHBottomNavigationItem item2 = new AHBottomNavigationItem("Dashboard", R.drawable.ic_launcher_foreground, android.R.color.black);
         AHBottomNavigationItem item3 = new AHBottomNavigationItem("Notifications", R.drawable.ic_launcher_foreground, android.R.color.black);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Tab4", R.drawable.ic_launcher_foreground, android.R.color.black);
+        AHBottomNavigationItem item5 = new AHBottomNavigationItem("Tab5", R.drawable.ic_launcher_foreground, android.R.color.black);
 
         // Add items
         bottomNavigation.addItem(item1);
         bottomNavigation.addItem(item2);
         bottomNavigation.addItem(item3);
+        bottomNavigation.addItem(item4);
+        bottomNavigation.addItem(item5);
 
+        // styles
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+
+        // on tab listener
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
@@ -126,5 +149,20 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         if (fragNavController != null) {
             fragNavController.pushFragment(fragment);
         }
+    }
+
+
+    private void initDrawer() {
+        mDuoDrawerLayout = (DuoDrawerLayout) findViewById(R.id.drawer);
+        mDuoMenuView = (DuoMenuView) mDuoDrawerLayout.getMenuView();
+
+        DuoDrawerToggle duoDrawerToggle = new DuoDrawerToggle(this,
+                mDuoDrawerLayout,
+                null,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        mDuoDrawerLayout.setDrawerListener(duoDrawerToggle);
+        duoDrawerToggle.syncState();
     }
 }
