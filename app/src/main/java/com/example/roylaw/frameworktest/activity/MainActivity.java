@@ -6,12 +6,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.example.roylaw.frameworktest.fragment.base.BaseFragment;
-import com.example.roylaw.frameworktest.fragment.DashboardFragment;
-import com.example.roylaw.frameworktest.fragment.HomeFragment;
-import com.example.roylaw.frameworktest.fragment.NotificationFragment;
 import com.example.roylaw.frameworktest.R;
+import com.example.roylaw.frameworktest.utils.TabUtils;
 import com.ncapdevi.fragnav.FragNavController;
 import com.ncapdevi.fragnav.FragNavSwitchController;
 import com.ncapdevi.fragnav.FragNavTransactionOptions;
@@ -22,12 +19,6 @@ import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
 public class MainActivity extends AppCompatActivity implements FragNavController.RootFragmentListener, FragNavSwitchController, FragNavController.TransactionListener, BaseFragment.FragmentNavigation {
-
-    private final int INDEX_HOME = FragNavController.TAB1;
-    private final int INDEX_DASHBOARD = FragNavController.TAB2;
-    private final int INDEX_NOTIFICATIONS = FragNavController.TAB3;
-    private final int INDEX_TAB4 = FragNavController.TAB4;
-    private final int INDEX_TAB5 = FragNavController.TAB5;
 
     // Views
     private DuoDrawerLayout mDuoDrawerLayout;
@@ -41,9 +32,10 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // init instagram-like back stack controller
         fragNavController = FragNavController.newBuilder(savedInstanceState, getSupportFragmentManager(), R.id.container)
                 .transactionListener(this)
-                .rootFragmentListener(this, 5)
+                .rootFragmentListener(this, TabUtils.getSize())
                 .popStrategy(FragNavTabHistoryController.CURRENT_TAB)
                 .switchController(this)
                 .build();
@@ -56,21 +48,8 @@ public class MainActivity extends AppCompatActivity implements FragNavController
     }
 
     @Override
-    public Fragment getRootFragment(int index) {
-        switch (index) {
-            case INDEX_HOME:
-                return new HomeFragment();
-            case INDEX_DASHBOARD:
-                return new DashboardFragment();
-            case INDEX_NOTIFICATIONS:
-                return new NotificationFragment();
-            case INDEX_TAB4:
-                return new NotificationFragment();
-            case INDEX_TAB5:
-                return new NotificationFragment();
-            default:
-                return null;
-        }
+    public Fragment getRootFragment(int position) {
+        return TabUtils.getRootFragment(position);
     }
 
     @Override
@@ -86,44 +65,6 @@ public class MainActivity extends AppCompatActivity implements FragNavController
     @Override
     public void onFragmentTransaction(Fragment fragment, FragNavController.TransactionType transactionType) {
         // TransactionListener
-    }
-
-    private void initBottomNavigation() {
-        bottomNavigation = findViewById(R.id.navigation);
-
-        // Create items
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Home", R.drawable.ic_launcher_foreground, android.R.color.black);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Dashboard", R.drawable.ic_launcher_foreground, android.R.color.black);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Notifications", R.drawable.ic_launcher_foreground, android.R.color.black);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Tab4", R.drawable.ic_launcher_foreground, android.R.color.black);
-        AHBottomNavigationItem item5 = new AHBottomNavigationItem("Tab5", R.drawable.ic_launcher_foreground, android.R.color.black);
-
-        // Add items
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-        bottomNavigation.addItem(item5);
-
-        // styles
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
-
-        // on tab listener
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                if (wasSelected) {
-                    // pop fragment in current stack if reselected
-                    if (!fragNavController.isRootFragment()) {
-                        fragNavController.popFragment();
-                    }
-                } else {
-                    // switch tab
-                    fragNavController.switchTab(position);
-                }
-                return true;
-            }
-        });
     }
 
     @Override
@@ -151,6 +92,27 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         }
     }
 
+    private void initBottomNavigation() {
+        bottomNavigation = findViewById(R.id.navigation);
+
+        bottomNavigation.addItems(TabUtils.getNavigationItems(this));
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                if (wasSelected) {
+                    // pop fragment in current stack if reselected
+                    if (!fragNavController.isRootFragment()) {
+                        fragNavController.popFragment();
+                    }
+                } else {
+                    // switch tab
+                    fragNavController.switchTab(position);
+                }
+                return true;
+            }
+        });
+    }
 
     private void initDrawer() {
         mDuoDrawerLayout = (DuoDrawerLayout) findViewById(R.id.drawer);
@@ -165,4 +127,5 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         mDuoDrawerLayout.setDrawerListener(duoDrawerToggle);
         duoDrawerToggle.syncState();
     }
+
 }

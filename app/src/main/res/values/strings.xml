@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">FrameworkTest</string>
+    
+    <!-- navigation tab -->
+    <string name="navigation_home">Home</string>
+    <string name="navigation_search">Search</string>
+    <string name="navigation_messages">Messages</string>
+    <string name="navigation_notifications">Notifications</string>
+    <string name="navigation_profile">Profile</string>
+    <!-- end of navigation tab -->
+
+    <!-- general string -->
+    <!-- end of general string -->
+
+    <!-- home -->
+    <!-- end of home-->
+
+    <!-- search -->
+    <!--end of search-->
+
+    <!-- messages -->
+    <!-- end of messages -->
+
+    <!-- notifications -->
+    <!-- end of notifications -->
+
+    <!-- profile -->
+    <!-- end of profile -->
+
 </resources>
