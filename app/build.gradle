@@ -19,9 +19,16 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+
+    // multi-backstack fragment navigation
+    implementation 'com.ncapdevi:frag-nav:2.4.0'
+
+    // bottom navigation bar
+    implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
 }
