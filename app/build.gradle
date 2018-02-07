@@ -34,4 +34,8 @@ dependencies {
 
     // navigation drawer
     implementation 'nl.psdcompany:duo-navigation-drawer:2.0.7'
+
+    // butterknife
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }

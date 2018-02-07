@@ -3,27 +3,29 @@ package com.example.roylaw.frameworktest.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.example.roylaw.frameworktest.fragment.base.BaseFragment;
 import com.example.roylaw.frameworktest.R;
+import com.example.roylaw.frameworktest.fragment.base.BaseFragment;
 import com.example.roylaw.frameworktest.utils.TabUtils;
 import com.ncapdevi.fragnav.FragNavController;
 import com.ncapdevi.fragnav.FragNavSwitchController;
 import com.ncapdevi.fragnav.FragNavTransactionOptions;
 import com.ncapdevi.fragnav.tabhistory.FragNavTabHistoryController;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity extends AppCompatActivity implements FragNavController.RootFragmentListener, FragNavSwitchController, FragNavController.TransactionListener, BaseFragment.FragmentNavigation {
+public class MainActivity extends BaseActivity implements FragNavController.RootFragmentListener, FragNavSwitchController, FragNavController.TransactionListener, BaseFragment.FragmentNavigation {
 
-    // Views
-    private DuoDrawerLayout mDuoDrawerLayout;
-    private DuoMenuView mDuoMenuView;
-    private AHBottomNavigation bottomNavigation;
+    @BindView(R.id.navigation)
+    AHBottomNavigation bottomNavigation;
+    @BindView(R.id.drawer)
+    DuoDrawerLayout drawerLayout;
+    private DuoMenuView drawerMenuView;
 
     private FragNavController fragNavController;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements FragNavController
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         // init instagram-like back stack controller
         fragNavController = FragNavController.newBuilder(savedInstanceState, getSupportFragmentManager(), R.id.container)
@@ -40,10 +43,7 @@ public class MainActivity extends AppCompatActivity implements FragNavController
                 .switchController(this)
                 .build();
 
-        // initialize bottom nav view
         initBottomNavigation();
-
-        // initialize drawer
         initDrawer();
     }
 
@@ -92,9 +92,12 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         }
     }
 
-    private void initBottomNavigation() {
-        bottomNavigation = findViewById(R.id.navigation);
+    // region Initialize View
 
+    /**
+     * initialize bottom nav view
+     */
+    private void initBottomNavigation() {
         bottomNavigation.addItems(TabUtils.getNavigationItems(this));
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
@@ -114,18 +117,21 @@ public class MainActivity extends AppCompatActivity implements FragNavController
         });
     }
 
+    /**
+     * initialize drawer
+     */
     private void initDrawer() {
-        mDuoDrawerLayout = (DuoDrawerLayout) findViewById(R.id.drawer);
-        mDuoMenuView = (DuoMenuView) mDuoDrawerLayout.getMenuView();
+        drawerMenuView = (DuoMenuView) drawerLayout.getMenuView();
 
         DuoDrawerToggle duoDrawerToggle = new DuoDrawerToggle(this,
-                mDuoDrawerLayout,
+                drawerLayout,
                 null,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        mDuoDrawerLayout.setDrawerListener(duoDrawerToggle);
+        drawerLayout.setDrawerListener(duoDrawerToggle);
         duoDrawerToggle.syncState();
     }
 
+    // endregion Initialize View
 }
