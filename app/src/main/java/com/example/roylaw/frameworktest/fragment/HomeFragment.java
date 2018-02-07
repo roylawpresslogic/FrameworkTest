@@ -20,19 +20,20 @@ import java.util.Random;
  */
 
 public class HomeFragment extends BaseFragment {
+    public static final String TAG = HomeFragment.class.getSimpleName();
 
     private int color;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d("HomeFragment", "onAttach");
+        Log.d(TAG, "onAttach");
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("HomeFragment", "onCreate");
+        Log.d(TAG, "onCreate");
 
         Random rnd = new Random();
         color = Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
@@ -41,14 +42,14 @@ public class HomeFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("HomeFragment", "onCreateView");
+        Log.d(TAG, "onCreateView");
         return inflater.inflate(R.layout.fragment_dummy, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("HomeFragment", "onViewCreated");
+        Log.d(TAG, "onViewCreated");
 
         Button button = view.findViewById(R.id.button);
         button.setText("home");
@@ -60,5 +61,23 @@ public class HomeFragment extends BaseFragment {
         });
 
         view.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d(TAG, "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d(TAG, "onDetach");
     }
 }

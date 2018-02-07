@@ -19,7 +19,7 @@ import nl.psdcompany.duonavigationdrawer.views.DuoDrawerLayout;
 import nl.psdcompany.duonavigationdrawer.views.DuoMenuView;
 import nl.psdcompany.duonavigationdrawer.widgets.DuoDrawerToggle;
 
-public class MainActivity extends BaseActivity implements FragNavController.RootFragmentListener, FragNavSwitchController, FragNavController.TransactionListener, BaseFragment.FragmentNavigation {
+public class MainActivity extends BaseActivity implements BaseFragment.FragmentNavigation {
 
     @BindView(R.id.navigation)
     AHBottomNavigation bottomNavigation;
@@ -35,36 +35,9 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        // init instagram-like back stack controller
-        fragNavController = FragNavController.newBuilder(savedInstanceState, getSupportFragmentManager(), R.id.container)
-                .transactionListener(this)
-                .rootFragmentListener(this, TabUtils.getSize())
-                .popStrategy(FragNavTabHistoryController.CURRENT_TAB)
-                .switchController(this)
-                .build();
-
+        initFragNavController(savedInstanceState);
         initBottomNavigation();
         initDrawer();
-    }
-
-    @Override
-    public Fragment getRootFragment(int position) {
-        return TabUtils.getRootFragment(position);
-    }
-
-    @Override
-    public void switchTab(int index, FragNavTransactionOptions fragNavTransactionOptions) {
-        bottomNavigation.setCurrentItem(index);
-    }
-
-    @Override
-    public void onTabTransaction(@Nullable Fragment fragment, int i) {
-        // TransactionListener
-    }
-
-    @Override
-    public void onFragmentTransaction(Fragment fragment, FragNavController.TransactionType transactionType) {
-        // TransactionListener
     }
 
     @Override
@@ -92,7 +65,43 @@ public class MainActivity extends BaseActivity implements FragNavController.Root
         }
     }
 
-    // region Initialize View
+    // region Initialize
+
+    /**
+     * Initialize instagram-like back stack controller
+     * @param savedInstanceState savedInstanceState
+     */
+    private void initFragNavController(Bundle savedInstanceState) {
+        fragNavController = FragNavController.newBuilder(savedInstanceState, getSupportFragmentManager(), R.id.container)
+                .transactionListener(
+                        new FragNavController.TransactionListener() {
+                            @Override
+                            public void onTabTransaction(@Nullable Fragment fragment, int i) {
+
+                            }
+                            @Override
+                            public void onFragmentTransaction(Fragment fragment, FragNavController.TransactionType transactionType) {
+
+                            }
+                        })
+                .rootFragmentListener(
+                        new FragNavController.RootFragmentListener() {
+                            @Override
+                            public Fragment getRootFragment(int i) {
+                                return TabUtils.getRootFragment(i);
+                            }
+                        },
+                        TabUtils.getSize())
+                .switchController(
+                        new FragNavSwitchController() {
+                            @Override
+                            public void switchTab(int i, FragNavTransactionOptions fragNavTransactionOptions) {
+                                bottomNavigation.setCurrentItem(i);
+                            }
+                        })
+                .popStrategy(FragNavTabHistoryController.CURRENT_TAB)
+                .build();
+    }
 
     /**
      * initialize bottom nav view
